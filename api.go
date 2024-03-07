@@ -8,7 +8,15 @@ import (
 )
 
 type JSONAPIServer struct{
-	svc priceFetcher
+	listenAddr string
+	svc PriceFetcher
+}
+
+func NewJSONAPIServer(listenAddr string, svc PriceFetcher) *JSONAPIServer{
+	return &JSONAPIServer{
+		listenAddr: listenAddr,
+		svc: svc,
+	}
 }
 
 type PriceResponse struct{
@@ -19,7 +27,8 @@ type PriceResponse struct{
 type APIFUnc func(context.Context, http.ResponseWriter, *http.Request)error
 
 func (s *JSONAPIServer) Run(){
-	http.HandleFunc("/", )
+	http.HandleFunc("/", makeHTTPHandlerFunc(s.handleFetchPrice))
+	http.ListenAndServe(s.listenAddr,nil)
 }
 
 func makeHTTPHandlerFunc(apiFn APIFUnc) http.HandlerFunc{
