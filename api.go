@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"math/rand"
 	"net/http"
+
+	"github.com/lawrence254/pricefetcher/types"
 )
 
 type JSONAPIServer struct{
@@ -17,11 +19,6 @@ func NewJSONAPIServer(listenAddr string, svc PriceFetcher) *JSONAPIServer{
 		listenAddr: listenAddr,
 		svc: svc,
 	}
-}
-
-type PriceResponse struct{
-	Ticker string `json:"ticker"`
-	Price float64 `json:"price"`
 }
 
 type APIFUnc func(context.Context, http.ResponseWriter, *http.Request)error
@@ -50,7 +47,7 @@ func (s *JSONAPIServer) handleFetchPrice(ctx context.Context, w http.ResponseWri
 	if err != nil {
 		return err
 	}
-	priceResp := PriceResponse{
+	priceResp := types.PriceResponse{
 		Price:price,
 		Ticker:ticker,
 	}
